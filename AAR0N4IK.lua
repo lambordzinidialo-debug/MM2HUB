@@ -1,56 +1,121 @@
 local P=game:GetService("Players")local U=game:GetService("UserInputService")local T=game:GetService("TweenService")local L=game:GetService("Lighting")local W=game:GetService("Workspace")local CG=game:GetService("CoreGui")local TS=game:GetService("TeleportService")local HS=game:GetService("HttpService")local VU=game:GetService("VirtualUser")local RS=game:GetService("RunService")local plr=P.LocalPlayer
-pcall(function()game:GetService("StarterGui"):SetCore("SendNotification",{Title="AAR0N4IK",Text="Загружаю...",Duration=3})end)
-local C={bg=Color3.fromRGB(15,8,25),bg2=Color3.fromRGB(26,15,45),bg3=Color3.fromRGB(45,25,75),a=Color3.fromRGB(168,85,247),a2=Color3.fromRGB(217,70,239),t=Color3.fromRGB(245,235,255),sub=Color3.fromRGB(160,150,180),r=Color3.fromRGB(255,60,60),b=Color3.fromRGB(60,150,255),g=Color3.fromRGB(60,220,100)}
+pcall(function()game:GetService("StarterGui"):SetCore("SendNotification",{Title="AAR0N4IK",Text="Анимированный Hub загружен!",Duration=4})end)
+local C={bg=Color3.fromRGB(10,5,20),bg2=Color3.fromRGB(22,12,40),bg3=Color3.fromRGB(40,20,65),a=Color3.fromRGB(168,85,247),a2=Color3.fromRGB(236,72,153),t=Color3.fromRGB(245,235,255),sub=Color3.fromRGB(170,160,190),r=Color3.fromRGB(255,60,60),b=Color3.fromRGB(60,150,255),g=Color3.fromRGB(60,220,100)}
 local mob=U.TouchEnabled and not U.KeyboardEnabled
-pcall(function()for _,n in ipairs({"AAR0N4IK_Hub","AAR0N4IK_Btn","AAR0N4IK_Shoot","AAR0N4IK_Track"})do local o=CG:FindFirstChild(n)if o then o:Destroy()end end end)
+pcall(function()for _,n in ipairs({"AAR0N4IK_Hub","AAR0N4IK_Btn","AAR0N4IK_Track"})do local o=CG:FindFirstChild(n)if o then o:Destroy()end end end)
 local function N(c,p)local o=Instance.new(c)for k,v in pairs(p)do o[k]=v end return o end
 local function cr(p,r)N("UICorner",{CornerRadius=UDim2.new(0,r or 8),Parent=p})end
-local function st(p,c,t)N("UIStroke",{Color=c or C.bg3,Thickness=t or 1,Transparency=0.5,Parent=p})end
+local function st(p,c,t,tr)N("UIStroke",{Color=c or C.bg3,Thickness=t or 1,Transparency=tr or 0.5,Parent=p})end
 local function grad(p,c1,c2,rot)N("UIGradient",{Color=ColorSequence.new(c1,c2),Rotation=rot or 90,Parent=p})end
 local vp=W.CurrentCamera.ViewportSize local SW=math.min(vp.X-20,420)local SH=math.min(vp.Y-90,500)
 local MAX_ORDER = 2147483647
+
 local gui=N("ScreenGui",{Name="AAR0N4IK_Hub",ResetOnSpawn=false,IgnoreGuiInset=true,DisplayOrder=MAX_ORDER})pcall(function()gui.Parent=CG end)if not gui.Parent then gui.Parent=plr:WaitForChild("PlayerGui")end
 local tg=N("ScreenGui",{Name="AAR0N4IK_Btn",ResetOnSpawn=false,IgnoreGuiInset=true,DisplayOrder=MAX_ORDER})pcall(function()tg.Parent=CG end)if not tg.Parent then tg.Parent=plr:WaitForChild("PlayerGui")end
-local fb=N("TextButton",{Size=UDim2.fromOffset(60,60),Position=UDim2.new(0.5,-30,0.5,-30),BackgroundColor3=C.bg2,Text="A",Font=Enum.Font.GothamBlack,TextSize=28,TextColor3=C.a2,AutoButtonColor=false,Active=true,Parent=tg}) 
-cr(fb,30) st(fb,C.a,2) grad(fb,C.bg3,C.bg2,45)
-local win=N("Frame",{Size=UDim2.fromOffset(SW,SH),Position=UDim2.new(0.5,-SW/2,0.5,-SH/2),BackgroundColor3=C.bg,BorderSizePixel=0,Visible=false,Parent=gui}) 
-cr(win,16) st(win,C.a,1.5) grad(win,C.bg,C.bg2,135)
-local th=N("Frame",{Size=UDim2.new(1,0,0,50),BackgroundColor3=C.bg2,BorderSizePixel=0,Parent=win}) 
+
+-- Кнопка А (Анимированная)
+local fb=N("TextButton",{Size=UDim2.fromOffset(65,65),Position=UDim2.new(0.5,-32.5,0.5,-32.5),BackgroundColor3=C.bg2,Text="A",Font=Enum.Font.GothamBlack,TextSize=30,TextColor3=C.t,AutoButtonColor=false,Active=true,Parent=tg}) 
+cr(fb,32.5) 
+local fbStroke = st(fb, C.a, 2.5, 0)
+grad(fb,C.a,C.a2,45)
+
+-- Пульсация кнопки
+task.spawn(function()
+    while fb.Parent do
+        T:Create(fbStroke,T.new(1.5),{Thickness=4,Transparency=0.5}):Play()
+        T:Create(fb,T.new(1.5),{TextColor3=C.a2}):Play()
+        task.wait(1.5)
+        T:Create(fbStroke,T.new(1.5),{Thickness=2.5,Transparency=0}):Play()
+        T:Create(fb,T.new(1.5),{TextColor3=C.t}):Play()
+        task.wait(1.5)
+    end
+end)
+
+-- Окно (Анимированное появление)
+local win=N("Frame",{Size=UDim2.fromOffset(0,0),Position=UDim2.new(0.5,-SW/2,0.5,-SH/2),BackgroundColor3=C.bg,BorderSizePixel=0,Visible=false,Parent=gui}) 
+cr(win,16) st(win,C.a,1.5,0.2) grad(win,C.bg,C.bg2,135)
+local th=N("Frame",{Size=UDim2.new(1,0,0,55),BackgroundColor3=C.bg2,BorderSizePixel=0,Parent=win}) 
 cr(th,16) 
-local thLine=N("Frame",{Size=UDim2.new(1,0,0,1),Position=UDim2.new(0,0,1,0),BackgroundColor3=C.a,Parent=th}) 
+local thLine=N("Frame",{Size=UDim2.new(1,0,0,2),Position=UDim2.new(0,0,1,0),BackgroundColor3=C.a,Parent=th}) 
 grad(thLine,C.a,C.a2,0)
-N("TextLabel",{Size=UDim2.new(1,-100,1,0),Position=UDim2.fromOffset(20,0),BackgroundTransparency=1,Font=Enum.Font.GothamBlack,Text="AAR0N4IK",TextColor3=C.t,TextSize=18,TextXAlignment=Enum.TextXAlignment.Left,Parent=th})
-N("TextLabel",{Size=UDim2.new(1,-100,1,0),Position=UDim2.fromOffset(125,2),BackgroundTransparency=1,Font=Enum.Font.GothamMedium,Text="PREMIUM",TextColor3=C.a2,TextSize=12,TextXAlignment=Enum.TextXAlignment.Left,Parent=th})
-local xb=N("TextButton",{Size=UDim2.fromOffset(32,32),Position=UDim2.new(1,-44,0.5,-16),BackgroundColor3=C.r,Text="×",Font=Enum.Font.GothamBold,TextSize=20,TextColor3=Color3.new(1,1,1),AutoButtonColor=false,Active=true,Parent=th}) 
+N("TextLabel",{Size=UDim2.new(1,-100,1,0),Position=UDim2.fromOffset(20,0),BackgroundTransparency=1,Font=Enum.Font.GothamBlack,Text="AAR0N4IK",TextColor3=C.t,TextSize=20,TextXAlignment=Enum.TextXAlignment.Left,Parent=th})
+N("TextLabel",{Size=UDim2.new(1,-100,1,0),Position=UDim2.fromOffset(140,2),BackgroundTransparency=1,Font=Enum.Font.GothamBlack,Text="PREMIUM",TextColor3=C.a2,TextSize=12,TextXAlignment=Enum.TextXAlignment.Left,Parent=th})
+local xb=N("TextButton",{Size=UDim2.fromOffset(35,35),Position=UDim2.new(1,-45,0.5,-17.5),BackgroundColor3=C.r,Text="×",Font=Enum.Font.GothamBold,TextSize=22,TextColor3=C.t,AutoButtonColor=false,Active=true,Parent=th}) 
 cr(xb,8)
-local function showMenu()win.Visible=true fb.Visible=false end
-local function hideMenu()win.Visible=false fb.Visible=true end
+
+local function showMenu()
+    win.Visible = true
+    fb.Visible = false
+    win.Size = UDim2.fromOffset(0,0)
+    T:Create(win,T.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out),{Size=UDim2.fromOffset(SW,SH)}):Play()
+end
+local function hideMenu()
+    T:Create(win,T.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In),{Size=UDim2.fromOffset(0,0)}):Play()
+    task.wait(0.2)
+    win.Visible = false
+    fb.Visible = true
+end
+
 local function addClick(btn,func)
     btn.MouseButton1Click:Connect(func)
-    btn.Activated:Connect(func) -- Работает на большинстве мобилок
     btn.TouchTap:Connect(func)
     btn.InputBegan:Connect(function(i)if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then func() end end)
 end
 addClick(xb,hideMenu) 
-addClick(fb,showMenu)
 
--- 2-Й СПОСОБ: Клавиатура (если есть)
-U.InputBegan:Connect(function(i, gp)
-    if gp then return end
-    if i.KeyCode == Enum.KeyCode.RightShift or i.KeyCode == Enum.KeyCode.M then
-        if win.Visible then hideMenu() else showMenu() end
+-- 🚀 МАТЕМАТИЧЕСКИЙ ОБХОД КЛИКОВ (Работает даже если Delta блокирует UI)
+local btnDrag = false
+local btnStartPos = nil
+local btnInitialPos = nil
+local isMoving = false
+
+U.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+        local pos = input.Position
+        local bPos = fb.AbsolutePosition
+        local bSize = fb.AbsoluteSize
+        -- Проверяем, попал ли палец в квадрат кнопки
+        if pos.X >= bPos.X and pos.X <= bPos.X + bSize.X and pos.Y >= bPos.Y and pos.Y <= bPos.Y + bSize.Y then
+            btnDrag = true
+            isMoving = false
+            btnStartPos = pos
+            btnInitialPos = fb.Position
+            -- Анимация нажатия
+            T:Create(fb,T.new(0.1),{Size=UDim2.fromOffset(55,55),Position=UDim2.new(fb.Position.X.Scale, fb.Position.X.Offset+5, fb.Position.Y.Scale, fb.Position.Y.Offset+5)}):Play()
+        end
     end
 end)
 
--- 3-Й СПОСОБ: Чат
+U.InputChanged:Connect(function(input)
+    if btnDrag and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
+        local delta = input.Position - btnStartPos
+        if math.abs(delta.X) > 10 or math.abs(delta.Y) > 10 then
+            isMoving = true
+            fb.Position = UDim2.new(btnInitialPos.X.Scale, btnInitialPos.X.Offset + delta.X, btnInitialPos.Y.Scale, btnInitialPos.Y.Offset + delta.Y)
+        end
+    end
+end)
+
+U.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if btnDrag then
+            btnDrag = false
+            -- Возвращаем размер
+            T:Create(fb,T.new(0.1),{Size=UDim2.fromOffset(65,65),Position=UDim2.new(fb.Position.X.Scale, fb.Position.X.Offset-5, fb.Position.Y.Scale, fb.Position.Y.Offset-5)}):Play()
+            -- Если не двигали, значит это был клик
+            if not isMoving then
+                showMenu()
+            end
+        end
+    end
+end)
+
+-- Чат-команда для страховки
 plr.Chatted:Connect(function(msg) 
     if msg:lower()=="/open" or msg:lower()=="/hub" then showMenu() end 
 end)
--- Открытие через обычный чат (на случай если MM2 блокирует /)
-plr.Chatted:Connect(function(msg)
-    if msg == "open" or msg == "hub" or msg == "меню" then showMenu() end
-end)
 
+-- Перетаскивание самого окна
 local dg,ds,dp=false,nil,nil 
 th.InputBegan:Connect(function(i)
     if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then 
@@ -65,16 +130,18 @@ U.InputChanged:Connect(function(i)
         local d=i.Position-ds win.Position=UDim2.new(dp.X.Scale,dp.X.Offset+d.X,dp.Y.Scale,dp.Y.Offset+d.Y)
     end 
 end)
-local tb=N("Frame",{Size=UDim2.new(0,90,1,-50),Position=UDim2.fromOffset(0,50),BackgroundTransparency=1,Parent=win})
+
+-- Вкладки
+local tb=N("Frame",{Size=UDim2.new(0,90,1,-55),Position=UDim2.fromOffset(0,55),BackgroundTransparency=1,Parent=win})
 N("UIListLayout",{Padding=UDim.new(0,6),HorizontalAlignment=Enum.HorizontalAlignment.Center,Parent=tb}) 
 N("UIPadding",{PaddingTop=UDim.new(0,10),Parent=tb})
-local ct=N("ScrollingFrame",{Size=UDim2.new(1,-100,1,-60),Position=UDim2.fromOffset(95,55),BackgroundTransparency=1,ScrollBarThickness=4,ScrollBarImageColor3=C.a,CanvasSize=UDim2.new(),AutomaticCanvasSize=Enum.AutomaticSize.Y,Parent=win})
+local ct=N("ScrollingFrame",{Size=UDim2.new(1,-100,1,-65),Position=UDim2.fromOffset(95,60),BackgroundTransparency=1,ScrollBarThickness=4,ScrollBarImageColor3=C.a,CanvasSize=UDim2.new(),AutomaticCanvasSize=Enum.AutomaticSize.Y,Parent=win})
 N("UIListLayout",{Padding=UDim.new(0,8),Parent=ct}) 
 N("UIPadding",{PaddingRight=UDim.new(0,10),PaddingBottom=UDim.new(0,15),Parent=ct})
 local tabs={}
 local function mTab(nm,icon)
-    local b=N("TextButton",{Size=UDim2.new(1,0,0,40),BackgroundColor3=C.bg2,Text=icon.." "..nm,Font=Enum.Font.GothamBold,TextSize=13,TextColor3=C.sub,AutoButtonColor=false,Active=true,Parent=tb}) 
-    cr(b,8) st(b,C.bg3,1) 
+    local b=N("TextButton",{Size=UDim2.new(1,0,0,42),BackgroundColor3=C.bg2,Text=icon.." "..nm,Font=Enum.Font.GothamBold,TextSize=13,TextColor3=C.sub,AutoButtonColor=false,Active=true,Parent=tb}) 
+    cr(b,8) st(b,C.bg3,1,0.5) 
     local p=N("Frame",{Size=UDim2.new(1,0,0,0),BackgroundTransparency=1,Visible=false,Parent=ct}) 
     N("UIListLayout",{Padding=UDim.new(0,8),Parent=p}) 
     N("AutomaticSize",{Parent=p}) 
@@ -82,6 +149,8 @@ local function mTab(nm,icon)
     local function switchTab()
         for _,x in ipairs(tabs)do x.p.Visible=false x.b.BackgroundColor3=C.bg2 x.b.TextColor3=C.sub local g=x.b:FindFirstChildOfClass("UIGradient") if g then g:Destroy() end end 
         p.Visible=true b.BackgroundColor3=C.bg3 b.TextColor3=C.t grad(b,C.a,C.a2,0) ct.CanvasPosition=Vector2.new()
+        T:Create(b,T.new(0.2),{Size=UDim2.new(1,0,0,46)}):Play()
+        task.delay(0.2, function() T:Create(b,T.new(0.2),{Size=UDim2.new(1,0,0,42)}):Play() end)
     end 
     addClick(b,switchTab) 
     if #tabs==1 then switchTab() end 
@@ -90,19 +159,19 @@ end
 local function lab(pp,tx)N("TextLabel",{Size=UDim2.new(1,0,0,20),BackgroundTransparency=1,Font=Enum.Font.GothamBold,TextSize=12,TextColor3=C.a2,TextXAlignment=Enum.TextXAlignment.Left,Text=tx,Parent=pp,AutomaticSize=Enum.AutomaticSize.Y})end
 local function tog(pp,tx,d,cb)
     local f=N("Frame",{Size=UDim2.new(1,0,0,48),BackgroundColor3=C.bg2,Parent=pp}) 
-    cr(f,10) st(f,C.bg3,1) 
+    cr(f,10) st(f,C.bg3,1,0.5) 
     N("TextLabel",{Size=UDim2.new(1,-70,1,0),Position=UDim2.fromOffset(15,0),BackgroundTransparency=1,Font=Enum.Font.GothamMedium,TextSize=14,TextColor3=C.t,TextXAlignment=Enum.TextXAlignment.Left,Text=tx,Parent=f}) 
-    local bg=N("Frame",{Size=UDim2.fromOffset(44,24),Position=UDim2.new(1,-60,0.5,-12),BackgroundColor3=C.bg3,Parent=f}) 
-    cr(bg,12) st(bg,C.bg3,1) 
-    local kn=N("Frame",{Size=UDim2.fromOffset(18,18),Position=d and UDim2.new(1,-22,0.5,-9) or UDim2.fromOffset(3,3),BackgroundColor3=C.t,Parent=bg}) 
-    cr(kn,12) 
+    local bg=N("Frame",{Size=UDim2.fromOffset(46,26),Position=UDim2.new(1,-60,0.5,-13),BackgroundColor3=C.bg3,Parent=f}) 
+    cr(bg,13) st(bg,C.bg3,1,0.5) 
+    local kn=N("Frame",{Size=UDim2.fromOffset(20,20),Position=d and UDim2.new(1,-23,0.5,-10) or UDim2.fromOffset(3,3),BackgroundColor3=C.t,Parent=bg}) 
+    cr(kn,10) 
     if d then grad(bg,C.a,C.a2,0) end 
     local s=d 
     local btn=N("TextButton",{Size=UDim2.fromScale(1,1),BackgroundTransparency=1,Text="",Active=true,Parent=f}) 
     local function fl()
         s=not s 
         T:Create(bg,T.new(0.2),{BackgroundColor3=s and C.a or C.bg3}):Play() 
-        T:Create(kn,T.new(0.2),{Position=s and UDim2.new(1,-22,0.5,-9) or UDim2.fromOffset(3,3)}):Play() 
+        T:Create(kn,T.new(0.2),{Position=s and UDim2.new(1,-23,0.5,-10) or UDim2.fromOffset(3,3)}):Play() 
         if s then grad(bg,C.a,C.a2,0) else local g=bg:FindFirstChildOfClass("UIGradient") if g then g:Destroy() end end 
         if cb then pcall(cb,s) end 
     end 
@@ -110,7 +179,7 @@ local function tog(pp,tx,d,cb)
 end
 local function sl(pp,tx,mn,mx,d,cb)
     local f=N("Frame",{Size=UDim2.new(1,0,0,68),BackgroundColor3=C.bg2,Parent=pp}) 
-    cr(f,10) st(f,C.bg3,1) 
+    cr(f,10) st(f,C.bg3,1,0.5) 
     local lb=N("TextLabel",{Size=UDim2.new(1,-20,0,20),Position=UDim2.fromOffset(15,5),BackgroundTransparency=1,Font=Enum.Font.GothamMedium,TextSize=14,TextColor3=C.t,TextXAlignment=Enum.TextXAlignment.Left,Text=tx..": "..d,Parent=f}) 
     local bar=N("Frame",{Size=UDim2.new(1,-30,0,6),Position=UDim2.new(0,15,1,-15),BackgroundColor3=C.bg3,Parent=f}) 
     cr(bar,3) 
@@ -137,7 +206,7 @@ local function btn(pp,tx,cb)
 end
 local function nt(m)
     local n=N("TextLabel",{Size=UDim2.fromOffset(math.min(vp.X-40,300),40),AnchorPoint=Vector2.new(0.5,0),BackgroundColor3=C.bg2,Font=Enum.Font.GothamBold,TextSize=13,TextColor3=C.t,Text="🔔 "..m,Parent=gui}) 
-    cr(n,8) st(n,C.a2,1) grad(n,C.bg2,C.bg3,45) 
+    cr(n,8) st(n,C.a2,1,0) grad(n,C.bg2,C.bg3,45) 
     n.Position=UDim2.new(0.5,0,0,-60) 
     T:Create(n,T.new(0.3),{Position=UDim2.new(0.5,0,0,20)}):Play() 
     task.delay(2.5,function()T:Create(n,T.new(0.3),{Position=UDim2.new(0.5,0,0,-60)}):Play()task.delay(0.4,function()n:Destroy()end)end)
@@ -156,7 +225,7 @@ local ga=false task.spawn(function()while task.wait(0.2)do if ga then local c=pl
 local as=false task.spawn(function()while task.wait(0.15)do if as then local c=plr.Character if c then local g=c:FindFirstChild("Gun")if g and g:IsA("Tool")then local m=fm()if m and m.Character then local h=m.Character:FindFirstChild("HumanoidRootPart")if h then pcall(function()local cm=W.CurrentCamera cm.CFrame=CFrame.new(cm.CFrame.Position,h.Position)g:Activate()end)end end end end end end end)
 local spin=false RS.Heartbeat:Connect(function()if spin and plr.Character then local h=plr.Character:FindFirstChild("HumanoidRootPart")if h then h.CFrame=h.CFrame*CFrame.Angles(0,math.rad(15),0)end end end)
 local ajump=false task.spawn(function()while task.wait(0.1)do if ajump and plr.Character then local m=fm()if m and m.Character and m.Character:FindFirstChild("HumanoidRootPart")then local d=(m.Character.HumanoidRootPart.Position-plr.Character.HumanoidRootPart.Position).Magnitude if d<20 then plr.Character.Humanoid.Jump=true end end end end end)
-local track=false local trackLbl=N("TextLabel",{Size=UDim2.fromOffset(180,32),Position=UDim2.new(1,-195,0,15),BackgroundColor3=C.bg2,TextColor3=C.a2,Font=Enum.Font.GothamBold,TextSize=14,Visible=false,Parent=gui}) cr(trackLbl,8) st(trackLbl,C.a,1) grad(trackLbl,C.bg2,C.bg3,0)
+local track=false local trackLbl=N("TextLabel",{Size=UDim2.fromOffset(180,32),Position=UDim2.new(1,-195,0,15),BackgroundColor3=C.bg2,TextColor3=C.a2,Font=Enum.Font.GothamBold,TextSize=14,Visible=false,Parent=gui}) cr(trackLbl,8) st(trackLbl,C.a,1,0) grad(trackLbl,C.bg2,C.bg3,0)
 task.spawn(function()while task.wait(0.5)do if track then local m=fm()if m and m.Character and plr.Character then local d=math.floor((m.Character.HumanoidRootPart.Position-plr.Character.HumanoidRootPart.Position).Magnitude)trackLbl.Text="🎯 Murderer: "..d.."m"trackLbl.TextColor3=C.r trackLbl.Visible=true else trackLbl.Text="🎯 Murderer: Safe"trackLbl.TextColor3=C.g trackLbl.Visible=true end else trackLbl.Visible=false end end end)
 local hug=false local hugT=nil local hugRun=nil local hugConn=nil
 local function nearP()local c,d=nil,1e9 local m=plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")if not m then return nil end for _,p in ipairs(P:GetPlayers())do if p~=plr and p.Character then local h=p.Character:FindFirstChild("HumanoidRootPart")if h then local dx=(h.Position-m.Position).Magnitude if dx<d then c=p d=dx end end end end return c end
@@ -164,16 +233,4 @@ local function stopHug()if hugConn then hugConn:Disconnect()hugConn=nil end if h
 local function startHug()hugT=nearP()if not hugT then nt("Нет игроков рядом")return end if hugConn then hugConn:Disconnect()end hugConn=RS.Heartbeat:Connect(function()if not hug then return end local c=plr.Character if not c then return end if not hugT or not hugT.Character then hugT=nearP()end if not hugT then return end local th=hugT.Character:FindFirstChild("HumanoidRootPart")local my=c:FindFirstChild("HumanoidRootPart")if not th or not my then return end my.CFrame=th.CFrame*CFrame.new(0,-2.5,2.5)my.Velocity=th.Velocity end)nt("Прилип к "..hugT.Name)end
 plr.CharacterAdded:Connect(function()task.wait(1.5)if hug then startHug()end end)
 plr.Idled:Connect(function()VU:CaptureController()VU:ClickButton2(Vector2.new())end)
-local m1=mTab("Chill","🏠") local m2=mTab("Render","👁") local m3=mTab("Fight","⚔️") local m4=mTab("Fun","🎮") local m6=mTab("Info","ℹ️")
-lab(m1,"ГЕЙМПЛЕЙ")tog(m1,"Coin Magnet",false,function(s)af=s nt(s and"Magnet ON"or"Magnet OFF")end)
-lab(m1,"ФИЗИКА")sl(m1,"Speed",16,200,16,sw) sl(m1,"Jump",50,300,50,sj)
-lab(m2,"ВИЗУАЛ")tog(m2,"Wallhack (Players)",false,function(s)esp=s aE()nt(s and"WH ON"or"WH OFF")end) tog(m2,"Item ESP",false,function(s)ie=s if not s then doIE()end nt(s and"Items ON"or"Items OFF")end)
-lab(m2,"СВЕТ")tog(m2,"Fullbright",false,sf) tog(m2,"FPS Boost",false,function(s)if s then doFps()end end)
-lab(m3,"АВТО-АТАКА")tog(m3,"Melee Aura",false,function(s)ka=s nt(s and"Melee ON"or"Melee OFF")end) tog(m3,"Ranged Aura",false,function(s)ga=s nt(s and"Ranged ON"or"Ranged OFF")end)
-tog(m3,"Auto-Shoot",false,function(s)as=s nt(s and"Auto-Shoot ON"or"Auto-Shoot OFF")end)
-lab(m3,"ЗАЩИТА")tog(m3,"Auto-Jump (Dodge)",false,function(s)ajump=s nt(s and"Dodge ON"or"Dodge OFF")end)
-lab(m4,"ТРОЛЛИНГ")tog(m4,"bang (Hug)",false,function(s)hug=s if s then startHug()else stopHug()nt("Отлип")end end) tog(m4,"Spin Bot",false,function(s)spin=s nt(s and"Spin ON"or"Spin OFF")end)
-lab(m4,"ИНФО")tog(m4,"Distance Tracker",false,function(s)track=s nt(s and"Tracker ON"or"Tracker OFF")end)
-N("TextLabel",{Size=UDim2.new(1,0,0,30),BackgroundTransparency=1,Font=Enum.Font.GothamBlack,TextSize=18,TextColor3=C.a2,Text="AAR0N4IK",Parent=m6})
-N("TextLabel",{Size=UDim2.new(1,0,0,60),BackgroundTransparency=1,Font=Enum.Font.GothamMedium,TextSize=13,TextColor3=C.sub,TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Left,Text="Premium Build v2.0\nUI Theme: Neon Purple\nЧтобы открыть меню, напишите в чат /open",Parent=m6})
-pcall(function()game:GetService("StarterGui"):SetCore("SendNotification",{Title="AAR0N4IK",Text="Hub загружен!",Duration=5})end)
+local m1=mTab("
