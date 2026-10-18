@@ -8,18 +8,11 @@ local function cr(p,r)N("UICorner",{CornerRadius=UDim2.new(0,r or 8),Parent=p})e
 local function st(p,c,t)N("UIStroke",{Color=c or C.bg3,Thickness=t or 1,Transparency=0.5,Parent=p})end
 local function grad(p,c1,c2,rot)N("UIGradient",{Color=ColorSequence.new(c1,c2),Rotation=rot or 90,Parent=p})end
 local vp=W.CurrentCamera.ViewportSize local SW=math.min(vp.X-20,420)local SH=math.min(vp.Y-90,500)
-
--- МАКСИМАЛЬНЫЙ ПРИОРИТЕТ ОТОБРАЖЕНИЯ (ПОВЕРХ ВСЕГО В ИГРЕ)
 local MAX_ORDER = 2147483647
-
 local gui=N("ScreenGui",{Name="AAR0N4IK_Hub",ResetOnSpawn=false,IgnoreGuiInset=true,DisplayOrder=MAX_ORDER})pcall(function()gui.Parent=CG end)if not gui.Parent then gui.Parent=plr:WaitForChild("PlayerGui")end
 local tg=N("ScreenGui",{Name="AAR0N4IK_Btn",ResetOnSpawn=false,IgnoreGuiInset=true,DisplayOrder=MAX_ORDER})pcall(function()tg.Parent=CG end)if not tg.Parent then tg.Parent=plr:WaitForChild("PlayerGui")end
-
--- Кнопка А
 local fb=N("TextButton",{Size=UDim2.fromOffset(60,60),Position=UDim2.new(0.5,-30,0.5,-30),BackgroundColor3=C.bg2,Text="A",Font=Enum.Font.GothamBlack,TextSize=28,TextColor3=C.a2,AutoButtonColor=false,Active=true,Parent=tg}) 
 cr(fb,30) st(fb,C.a,2) grad(fb,C.bg3,C.bg2,45)
-
--- Окно
 local win=N("Frame",{Size=UDim2.fromOffset(SW,SH),Position=UDim2.new(0.5,-SW/2,0.5,-SH/2),BackgroundColor3=C.bg,BorderSizePixel=0,Visible=false,Parent=gui}) 
 cr(win,16) st(win,C.a,1.5) grad(win,C.bg,C.bg2,135)
 local th=N("Frame",{Size=UDim2.new(1,0,0,50),BackgroundColor3=C.bg2,BorderSizePixel=0,Parent=win}) 
@@ -30,60 +23,34 @@ N("TextLabel",{Size=UDim2.new(1,-100,1,0),Position=UDim2.fromOffset(20,0),Backgr
 N("TextLabel",{Size=UDim2.new(1,-100,1,0),Position=UDim2.fromOffset(125,2),BackgroundTransparency=1,Font=Enum.Font.GothamMedium,Text="PREMIUM",TextColor3=C.a2,TextSize=12,TextXAlignment=Enum.TextXAlignment.Left,Parent=th})
 local xb=N("TextButton",{Size=UDim2.fromOffset(32,32),Position=UDim2.new(1,-44,0.5,-16),BackgroundColor3=C.r,Text="×",Font=Enum.Font.GothamBold,TextSize=20,TextColor3=Color3.new(1,1,1),AutoButtonColor=false,Active=true,Parent=th}) 
 cr(xb,8)
-
 local function showMenu()win.Visible=true fb.Visible=false end
 local function hideMenu()win.Visible=false fb.Visible=true end
-
 local function addClick(btn,func)
     btn.MouseButton1Click:Connect(func)
+    btn.Activated:Connect(func) -- Работает на большинстве мобилок
     btn.TouchTap:Connect(func)
-    btn.MouseButton1Down:Connect(func)
+    btn.InputBegan:Connect(function(i)if i.UserInputType==Enum.UserInputType.Touch or i.UserInputType==Enum.UserInputType.MouseButton1 then func() end end)
 end
-
 addClick(xb,hideMenu) 
+addClick(fb,showMenu)
 
--- ЛОГИКА ПЕРЕТАСКИВАНИЯ И КЛИКА КНОПКИ "А"
-local btnDrag = false
-local btnStartPos = nil
-local btnInitialPos = nil
-local isMoving = false
-
-fb.InputBegan:Connect(function(i)
-    if i.UserInputType == Enum.UserInputType.Touch or i.UserInputType == Enum.UserInputType.MouseButton1 then
-        btnDrag = true
-        isMoving = false
-        btnStartPos = i.Position
-        btnInitialPos = fb.Position
+-- 2-Й СПОСОБ: Клавиатура (если есть)
+U.InputBegan:Connect(function(i, gp)
+    if gp then return end
+    if i.KeyCode == Enum.KeyCode.RightShift or i.KeyCode == Enum.KeyCode.M then
+        if win.Visible then hideMenu() else showMenu() end
     end
 end)
 
-U.InputChanged:Connect(function(i)
-    if btnDrag and (i.UserInputType == Enum.UserInputType.Touch or i.UserInputType == Enum.UserInputType.MouseMovement) then
-        local d = i.Position - btnStartPos
-        -- Если сдвинули больше чем на 5 пикселей, считаем это перетаскиванием
-        if math.abs(d.X) > 5 or math.abs(d.Y) > 5 then
-            isMoving = true
-            fb.Position = UDim2.new(btnInitialPos.X.Scale, btnInitialPos.X.Offset + d.X, btnInitialPos.Y.Scale, btnInitialPos.Y.Offset + d.Y)
-        end
-    end
-end)
-
-U.InputEnded:Connect(function(i)
-    if i.UserInputType == Enum.UserInputType.Touch or i.UserInputType == Enum.UserInputType.MouseButton1 then
-        if btnDrag and not isMoving then
-            -- Если это был просто клик (не двигали), открываем меню
-            showMenu()
-        end
-        btnDrag = false
-    end
-end)
-
--- ЧАТ-КОМАНДА ДЛЯ ОТКРЫТИЯ (/open)
+-- 3-Й СПОСОБ: Чат
 plr.Chatted:Connect(function(msg) 
     if msg:lower()=="/open" or msg:lower()=="/hub" then showMenu() end 
 end)
+-- Открытие через обычный чат (на случай если MM2 блокирует /)
+plr.Chatted:Connect(function(msg)
+    if msg == "open" or msg == "hub" or msg == "меню" then showMenu() end
+end)
 
--- Перетаскивание самого окна
 local dg,ds,dp=false,nil,nil 
 th.InputBegan:Connect(function(i)
     if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then 
@@ -98,7 +65,6 @@ U.InputChanged:Connect(function(i)
         local d=i.Position-ds win.Position=UDim2.new(dp.X.Scale,dp.X.Offset+d.X,dp.Y.Scale,dp.Y.Offset+d.Y)
     end 
 end)
-
 local tb=N("Frame",{Size=UDim2.new(0,90,1,-50),Position=UDim2.fromOffset(0,50),BackgroundTransparency=1,Parent=win})
 N("UIListLayout",{Padding=UDim.new(0,6),HorizontalAlignment=Enum.HorizontalAlignment.Center,Parent=tb}) 
 N("UIPadding",{PaddingTop=UDim.new(0,10),Parent=tb})
@@ -209,5 +175,5 @@ lab(m3,"ЗАЩИТА")tog(m3,"Auto-Jump (Dodge)",false,function(s)ajump=s nt(s a
 lab(m4,"ТРОЛЛИНГ")tog(m4,"bang (Hug)",false,function(s)hug=s if s then startHug()else stopHug()nt("Отлип")end end) tog(m4,"Spin Bot",false,function(s)spin=s nt(s and"Spin ON"or"Spin OFF")end)
 lab(m4,"ИНФО")tog(m4,"Distance Tracker",false,function(s)track=s nt(s and"Tracker ON"or"Tracker OFF")end)
 N("TextLabel",{Size=UDim2.new(1,0,0,30),BackgroundTransparency=1,Font=Enum.Font.GothamBlack,TextSize=18,TextColor3=C.a2,Text="AAR0N4IK",Parent=m6})
-N("TextLabel",{Size=UDim2.new(1,0,0,60),BackgroundTransparency=1,Font=Enum.Font.GothamMedium,TextSize=13,TextColor3=C.sub,TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Left,Text="Premium Build v2.0\nUI Theme: Neon Purple\nЕсли кнопка А не нажимается, напишите в чат /open\nКнопку А можно перетаскивать.",Parent=m6})
-pcall(function()game:GetService
+N("TextLabel",{Size=UDim2.new(1,0,0,60),BackgroundTransparency=1,Font=Enum.Font.GothamMedium,TextSize=13,TextColor3=C.sub,TextWrapped=true,TextXAlignment=Enum.TextXAlignment.Left,Text="Premium Build v2.0\nUI Theme: Neon Purple\nЧтобы открыть меню, напишите в чат /open",Parent=m6})
+pcall(function()game:GetService("StarterGui"):SetCore("SendNotification",{Title="AAR0N4IK",Text="Hub загружен!",Duration=5})end)
