@@ -14,15 +14,12 @@ end
 local gui=Instance.new("ScreenGui")
 gui.Name="AAR0N4IK_Overdrive" gui.ResetOnSpawn=false gui.DisplayOrder=100 gui.Parent=plr:WaitForChild("PlayerGui")
 
--- === ГРАФФИТИ ПРИ ЗАГРУЗКЕ (БЕЗ ИСЧЕЗНОВЕНИЯ) ===
+-- === ГРАФФИТИ ПРИ ЗАГРУЗКЕ ===
 task.spawn(function()
     task.wait(1)
     local shop = W:FindFirstChild("Shop", true) or W:FindFirstChild("Radio", true) or W:FindFirstChild("Market", true)
     local pos = plr.Character and plr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -2.8, -5) or CFrame.new(0, 0, 0)
-    if shop and shop:IsA("BasePart") then
-        pos = shop.CFrame * CFrame.new(0, 0.5, 5)
-    end
-    
+    if shop and shop:IsA("BasePart") then pos = shop.CFrame * CFrame.new(0, 0.5, 5) end
     local paint = Instance.new("Part", W)
     paint.Name = "AAR0N_Graffiti"
     paint.Size = Vector3.new(15, 1, 15)
@@ -30,11 +27,9 @@ task.spawn(function()
     paint.Anchored = true
     paint.CanCollide = false
     paint.Transparency = 1
-    
     local sg = Instance.new("SurfaceGui", paint)
     sg.Face = Enum.NormalId.Top
     sg.CanvasSize = Vector2.new(500, 500)
-    
     local text = Instance.new("TextLabel", sg)
     text.Size = UDim2.new(1, 0, 1, 0)
     text.BackgroundTransparency = 1
@@ -43,7 +38,6 @@ task.spawn(function()
     text.Font = Enum.Font.GothamBlack
     text.TextScaled = true
     text.TextStrokeTransparency = 0.7
-    -- Таймер удаления убран, надпись остается навсегда
 end)
 
 local shootBtn=Instance.new("TextButton",gui)
@@ -61,7 +55,7 @@ topbar.Size=UDim2.new(1,0,0,40) topbar.BackgroundColor3=C.bg2 topbar.BorderSizeP
 Instance.new("UICorner",topbar).CornerRadius=UDim.new(0,12) topbar.Parent=main
 
 local title=Instance.new("TextLabel",topbar)
-title.Size=UDim2.new(1,-40,1,0) title.BackgroundTransparency=1 title.Text="AAR0N4IK | 85 FUNCTIONS" title.TextColor3=C.a2 title.Font=Enum.Font.GothamBlack title.TextSize=15 title.Parent=topbar
+title.Size=UDim2.new(1,-40,1,0) title.BackgroundTransparency=1 title.Text="AAR0N4IK | WIDE UI" title.TextColor3=C.a2 title.Font=Enum.Font.GothamBlack title.TextSize=15 title.Parent=topbar
 
 local closeBtn=Instance.new("TextButton",topbar)
 closeBtn.Size=UDim2.fromOffset(30,30) closeBtn.Position=UDim2.new(1,-35,0.5,-15) closeBtn.BackgroundColor3=C.r closeBtn.Text="×" closeBtn.TextColor3=C.t closeBtn.Font=Enum.Font.GothamBold closeBtn.TextSize=20 closeBtn.AutoButtonColor=false
@@ -76,17 +70,29 @@ task.spawn(function() while aBtn.Parent do T:Create(aGlow, T.new(1), {Transparen
 addClick(closeBtn, function() main.Visible = false aBtn.Visible = true end)
 addClick(aBtn, function() main.Visible = true aBtn.Visible = false end)
 
+-- === ШИРОКАЯ БОКОВАЯ ПАНЕЛЬ (25% ШИРИНЫ) ===
 local sidebar=Instance.new("Frame",main)
-sidebar.Size=UDim2.new(0,115,1,-45) sidebar.Position=UDim2.new(0,5,0,45) sidebar.BackgroundTransparency=1 sidebar.Parent=main
-local sLayout=Instance.new("UIListLayout",sidebar) sLayout.Padding=UDim.new(0,6)
+sidebar.Size=UDim2.new(0.25, -5, 1, -45) -- 25% ширины
+sidebar.Position=UDim2.new(0, 5, 0, 45)
+sidebar.BackgroundTransparency=1
+sidebar.Parent=main
+local sLayout=Instance.new("UIListLayout",sidebar)
+sLayout.Padding=UDim.new(0,6)
+sLayout.HorizontalAlignment=Enum.HorizontalAlignment.Center
+local sPad=Instance.new("UIPadding",sidebar)
+sPad.PaddingTop=UDim.new(0,10)
 
+-- === КОНТЕНТ (75% ШИРИНЫ) ===
 local content=Instance.new("Frame",main)
-content.Size=UDim2.new(1,-130,1,-55) content.Position=UDim2.new(0,125,0,50) content.BackgroundTransparency=1 content.Parent=main
+content.Size=UDim2.new(0.75, -5, 1, -55)
+content.Position=UDim2.new(0.25, 0, 0, 50)
+content.BackgroundTransparency=1
+content.Parent=main
 
 local tabs={}
 local function createTab(name, icon)
     local b=Instance.new("TextButton",sidebar)
-    b.Size=UDim2.new(1,0,0,32) b.BackgroundColor3=C.bg2 b.Text=icon.." "..name b.TextColor3=C.sub b.Font=Enum.Font.GothamBold b.TextSize=12 b.AutoButtonColor=false b.Active = true
+    b.Size=UDim2.new(1,-10,0,36) b.BackgroundColor3=C.bg2 b.Text=icon.." "..name b.TextColor3=C.sub b.Font=Enum.Font.GothamBold b.TextSize=13 b.AutoButtonColor=false b.Active = true
     Instance.new("UICorner",b).CornerRadius=UDim.new(0,8)
     local p=Instance.new("ScrollingFrame",content)
     p.Size=UDim2.new(1,0,1,0) p.BackgroundTransparency=1 p.ScrollBarThickness=3 p.ScrollBarImageColor3=C.a p.CanvasSize=UDim2.new() p.AutomaticCanvasSize=Enum.AutomaticSize.Y p.Visible=false
@@ -193,6 +199,7 @@ local t6=createTab("Epic","💥")
 local t7=createTab("Misc","🌐")
 
 -- 1. MAIN
+local flySpeed = 50
 local noclip=false; RS.Stepped:Connect(function() if noclip and plr.Character then for _,v in pairs(plr.Character:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide=false end end end end)
 local af=false; plr.Idled:Connect(function() if af then VU:CaptureController(); VU:ClickButton2(Vector2.new()) end end)
 local autoFarm=false; task.spawn(function() while task.wait(0.5) do if autoFarm and plr.Character then local hrp=plr.Character:FindFirstChild("HumanoidRootPart") if hrp then for _,v in ipairs(W:GetDescendants()) do if v:IsA("BasePart") and v.Name:lower():find("coin") then hrp.CFrame=v.CFrame end end end end end end)
@@ -202,7 +209,10 @@ local function setSpeed(v) if plr.Character then plr.Character.Humanoid.WalkSpee
 local function setJump(v) if plr.Character then plr.Character.Humanoid.UseJumpPower=true; plr.Character.Humanoid.JumpPower=v end end
 local lowGrav=false; RS.Heartbeat:Connect(function() if lowGrav and W.Gravity ~= 50 then W.Gravity = 50 elseif not lowGrav and W.Gravity ~= 196.2 then W.Gravity = 196.2 end end)
 local walkWater=false; task.spawn(function() while task.wait(0.5) do if walkWater and plr.Character then local h=plr.Character:FindFirstChild("Humanoid") if h then h:ChangeState(Enum.HumanoidStateType.Swimming) end end end end)
-createToggle(t1,"Noclip",false,function(s)noclip=s end) createToggle(t1,"Anti-AFK",false,function(s)af=s end) createToggle(t1,"Auto Farm Coins",false,function(s)autoFarm=s end) createToggle(t1,"Infinite Jump",false,function(s)infjump=s end) createToggle(t1,"Fly (WASD)",false,function(s) fly=s local c=plr.Character if not c then return end local h=c:FindFirstChild("HumanoidRootPart") if s then bv=Instance.new("BodyVelocity",h) bv.MaxForce=Vector3.new(1e5,1e5,1e5) bv.Velocity=Vector3.new(0,0,0) bg=Instance.new("BodyGyro",h) bg.MaxTorque=Vector3.new(1e5,1e5,1e5) task.spawn(function() while fly do task.wait() local cam=W.CurrentCamera local move=Vector3.new() if U:IsKeyDown(Enum.KeyCode.W) then move=move+cam.CFrame.LookVector end if bv then bv.Velocity=move*50 end end end) else if bv then bv:Destroy() end if bg then bg:Destroy() end end end) createToggle(t1,"Low Gravity",false,function(s)lowGrav=s end) createToggle(t1,"Walk on Water",false,function(s)walkWater=s end) createTextBox(t1, "Введи скорость", function(num) setSpeed(num) end) createTextBox(t1, "Введи прыжок", function(num) setJump(num) end) createButton(t1,"Speed 16 (Reset)",function() setSpeed(16) end) createButton(t1,"Jump 50 (Reset)",function() setJump(50) end) createButton(t1,"Reset Character",function() if plr.Character then plr.Character:BreakJoints() end end)
+createToggle(t1,"Noclip",false,function(s)noclip=s end) createToggle(t1,"Anti-AFK",false,function(s)af=s end) createToggle(t1,"Auto Farm Coins",false,function(s)autoFarm=s end) createToggle(t1,"Infinite Jump",false,function(s)infjump=s end) 
+createToggle(t1,"Fly (WASD)",false,function(s) fly=s local c=plr.Character if not c then return end local h=c:FindFirstChild("HumanoidRootPart") if s then bv=Instance.new("BodyVelocity",h) bv.MaxForce=Vector3.new(1e5,1e5,1e5) bv.Velocity=Vector3.new(0,0,0) bg=Instance.new("BodyGyro",h) bg.MaxTorque=Vector3.new(1e5,1e5,1e5) task.spawn(function() while fly do task.wait() local cam=W.CurrentCamera local move=Vector3.new() if U:IsKeyDown(Enum.KeyCode.W) then move=move+cam.CFrame.LookVector end if bv then bv.Velocity=move*flySpeed end end end) else if bv then bv:Destroy() end if bg then bg:Destroy() end end end) 
+createTextBox(t1, "Скорость полета", function(num) flySpeed = num end)
+createToggle(t1,"Low Gravity",false,function(s)lowGrav=s end) createToggle(t1,"Walk on Water",false,function(s)walkWater=s end) createTextBox(t1, "Введи скорость", function(num) setSpeed(num) end) createTextBox(t1, "Введи прыжок", function(num) setJump(num) end) createButton(t1,"Speed 16 (Reset)",function() setSpeed(16) end) createButton(t1,"Jump 50 (Reset)",function() setJump(50) end) createButton(t1,"Reset Character",function() if plr.Character then plr.Character:BreakJoints() end end)
 
 -- 2. VISUAL
 local esp=false; local function aE()for _,p in ipairs(P:GetPlayers())do if p.Character then local o=p.Character:FindFirstChild("AAR0N_ESP")if o then o:Destroy()end end end if not esp then return end for _,p in ipairs(P:GetPlayers())do if p~=plr and p.Character then local h=Instance.new("Highlight")h.Name="AAR0N_ESP"h.Adornee=p.Character h.FillTransparency=0.5 h.DepthMode=Enum.HighlightDepthMode.AlwaysOnTop local r=role(p)if r=="Murderer"then h.FillColor=C.r elseif r=="Sheriff"then h.FillColor=C.b else h.FillColor=C.g end h.Parent=p.Character end end end task.spawn(function()while task.wait(1)do if esp then aE()end end end)
@@ -218,5 +228,4 @@ createToggle(t2,"See Roles (ESP)",false,function(s)esp=s; aE() end) createToggle
 
 -- 3. COMBAT
 local ka=false; task.spawn(function()while task.wait(0.1)do if ka then local c=plr.Character local k=c and c:FindFirstChild("Knife")if k then for _,p in ipairs(P:GetPlayers())do if p~=plr and p.Character and p.Character:FindFirstChild("HumanoidRootPart")then if(p.Character.HumanoidRootPart.Position-c.HumanoidRootPart.Position).Magnitude<15 then pcall(function()k:Activate()end)end end end end end end end)
-local silentAim=false; RS.RenderStepped:Connect(function() if silentAim then local m=fm() if m and m.Character and m.Character:FindFirstChild("HumanoidRootPart") then W.CurrentCamera.CFrame=CFrame.lookAt(W.CurrentCamera.CFrame.Position, m.Character.HumanoidRootPart.Position) end end end)
-local autoKill=false; task.spawn(function() w
+local silentAim=false; RS.RenderStepped:Connect(function() if silentAim then local m=fm() if m 
