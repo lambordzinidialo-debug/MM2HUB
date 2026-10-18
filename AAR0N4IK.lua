@@ -1,4 +1,4 @@
--- AAR0N4IK HUB | Premium Edition | MM2
+-- AAR0N4IK HUB | Premium Edition | Mobile Fix
 local P=game:GetService("Players")local U=game:GetService("UserInputService")local T=game:GetService("TweenService")local L=game:GetService("Lighting")local W=game:GetService("Workspace")local CG=game:GetService("CoreGui")local TS=game:GetService("TeleportService")local HS=game:GetService("HttpService")local VU=game:GetService("VirtualUser")local RS=game:GetService("RunService")local plr=P.LocalPlayer
 
 -- Тема (Deep Purple & Neon)
@@ -26,11 +26,11 @@ local sg=N("ScreenGui",{Name="AAR0N4IK_Shoot",ResetOnSpawn=false,IgnoreGuiInset=
 local trg=N("ScreenGui",{Name="AAR0N4IK_Track",ResetOnSpawn=false,IgnoreGuiInset=true,DisplayOrder=1002})pcall(function()trg.Parent=CG end)
 
 -- Кнопка А (Стеклянная)
-local fb=N("TextButton",{Size=UDim2.fromOffset(50,50),Position=UDim2.new(0,15,0,90),BackgroundColor3=C.bg2,Text="A",Font=Enum.Font.GothamBlack,TextSize=24,TextColor3=C.a2,AutoButtonColor=false,Parent=tg})
+local fb=N("TextButton",{Size=UDim2.fromOffset(50,50),Position=UDim2.new(0,15,0,90),BackgroundColor3=C.bg2,Text="A",Font=Enum.Font.GothamBlack,TextSize=24,TextColor3=C.a2,AutoButtonColor=false,Active=true,Parent=tg})
 cr(fb,25) st(fb,C.a,2) grad(fb,C.bg3,C.bg2,45)
 
 -- Кнопка SHOOT (Неоновая)
-local sb=N("TextButton",{Size=UDim2.fromOffset(76,76),Position=UDim2.new(0,15,0,155),BackgroundColor3=C.a,Text="🔫\nSHOOT",Font=Enum.Font.GothamBlack,TextSize=12,TextColor3=Color3.new(1,1,1),AutoButtonColor=false,Visible=false,Parent=sg})
+local sb=N("TextButton",{Size=UDim2.fromOffset(76,76),Position=UDim2.new(0,15,0,155),BackgroundColor3=C.a,Text="🔫\nSHOOT",Font=Enum.Font.GothamBlack,TextSize=12,TextColor3=Color3.new(1,1,1),AutoButtonColor=false,Visible=false,Active=true,Parent=sg})
 cr(sb,38) st(sb,C.a2,2) grad(sb,C.a,C.a2,90)
 local gl=N("UIStroke",{Color=C.a2,Thickness=4,Transparency=0.2,Parent=sb})
 task.spawn(function()while sb.Parent do T:Create(gl,T.new(1),{Transparency=0.8}):Play()T:Create(sb,T.new(1),{Size=UDim2.fromOffset(80,80),Position=UDim2.new(0,13,0,153)}):Play()task.wait(1)T:Create(gl,T.new(1),{Transparency=0.2}):Play()T:Create(sb,T.new(1),{Size=UDim2.fromOffset(76,76),Position=UDim2.new(0,15,0,155)}):Play()task.wait(1)end end)
@@ -52,12 +52,24 @@ N("TextLabel",{Size=UDim2.new(1,-100,1,0),Position=UDim2.fromOffset(20,0),Backgr
 N("TextLabel",{Size=UDim2.new(1,-100,1,0),Position=UDim2.fromOffset(125,2),BackgroundTransparency=1,Font=Enum.Font.GothamMedium,Text="PREMIUM",TextColor3=C.a2,TextSize=12,TextXAlignment=Enum.TextXAlignment.Left,Parent=th})
 
 -- Кнопки закрытия
-local xb=N("TextButton",{Size=UDim2.fromOffset(32,32),Position=UDim2.new(1,-44,.5,-16),BackgroundColor3=C.r,Text="×",Font=Enum.Font.GothamBold,TextSize=20,TextColor3=Color3.new(1,1,1),AutoButtonColor=false,Parent=th}) cr(xb,8)
-local mb2=N("TextButton",{Size=UDim2.fromOffset(32,32),Position=UDim2.new(1,-84,.5,-16),BackgroundColor3=C.bg3,Text="—",Font=Enum.Font.GothamBold,TextSize=18,TextColor3=C.t,AutoButtonColor=false,Parent=th}) cr(mb2,8)
+local xb=N("TextButton",{Size=UDim2.fromOffset(32,32),Position=UDim2.new(1,-44,.5,-16),BackgroundColor3=C.r,Text="×",Font=Enum.Font.GothamBold,TextSize=20,TextColor3=Color3.new(1,1,1),AutoButtonColor=false,Active=true,Parent=th}) cr(xb,8)
+local mb2=N("TextButton",{Size=UDim2.fromOffset(32,32),Position=UDim2.new(1,-84,.5,-16),BackgroundColor3=C.bg3,Text="—",Font=Enum.Font.GothamBold,TextSize=18,TextColor3=C.t,AutoButtonColor=false,Active=true,Parent=th}) cr(mb2,8)
 
 local function showMenu()win.Visible=true fb.Visible=false end
 local function hideMenu()win.Visible=false fb.Visible=true end
-xb.MouseButton1Click:Connect(hideMenu) mb2.MouseButton1Click:Connect(hideMenu)
+
+-- ИСПРАВЛЕННЫЕ КЛИКИ (Для телефона)
+local function addClick(btn, func)
+    btn.MouseButton1Click:Connect(func)
+    btn.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            func()
+        end
+    end)
+end
+
+addClick(xb, hideMenu) addClick(mb2, hideMenu)
+addClick(fb, showMenu)
 
 -- Перетаскивание
 local dg,ds,dp=false,nil,nil
@@ -75,13 +87,13 @@ N("UIListLayout",{Padding=UDim.new(0,8),Parent=ct}) N("UIPadding",{PaddingRight=
 
 local tabs={}
 local function mTab(nm, icon)
-    local b=N("TextButton",{Size=UDim2.new(1,0,0,40),BackgroundColor3=C.bg2,Text=icon.." "..nm,Font=Enum.Font.GothamBold,TextSize=13,TextColor3=C.sub,AutoButtonColor=false,Parent=tb})
+    local b=N("TextButton",{Size=UDim2.new(1,0,0,40),BackgroundColor3=C.bg2,Text=icon.." "..nm,Font=Enum.Font.GothamBold,TextSize=13,TextColor3=C.sub,AutoButtonColor=false,Active=true,Parent=tb})
     cr(b,8) st(b,C.bg3,1)
     local p=N("Frame",{Size=UDim2.new(1,0,0,0),BackgroundTransparency=1,Visible=false,Parent=ct})
     N("UIListLayout",{Padding=UDim.new(0,8),Parent=p}) N("AutomaticSize",{Parent=p})
     table.insert(tabs,{b=b,p=p})
     
-    b.MouseButton1Click:Connect(function()
+    local function switchTab()
         for _,x in ipairs(tabs)do 
             x.p.Visible=false 
             x.b.BackgroundColor3=C.bg2 
@@ -93,8 +105,9 @@ local function mTab(nm, icon)
         b.TextColor3=C.t
         grad(b,C.a,C.a2,0)
         ct.CanvasPosition=Vector2.new()
-    end)
-    if #tabs==1 then p.Visible=true b.BackgroundColor3=C.bg3 b.TextColor3=C.t grad(b,C.a,C.a2,0) end
+    end
+    addClick(b, switchTab)
+    if #tabs==1 then switchTab() end
     return p 
 end
 
@@ -113,7 +126,7 @@ local function tog(pp,tx,d,cb)
     if d then grad(bg,C.a,C.a2,0) end
     
     local s=d 
-    local btn=N("TextButton",{Size=UDim2.fromScale(1,1),BackgroundTransparency=1,Text="",Parent=f})
+    local btn=N("TextButton",{Size=UDim2.fromScale(1,1),BackgroundTransparency=1,Text="",Active=true,Parent=f})
     local function fl()
         s=not s 
         T:Create(bg,T.new(.2),{BackgroundColor3=s and C.a or C.bg3}):Play()
@@ -121,7 +134,7 @@ local function tog(pp,tx,d,cb)
         if s then grad(bg,C.a,C.a2,0) else local g=bg:FindFirstChildOfClass("UIGradient") if g then g:Destroy() end end
         if cb then pcall(cb,s) end 
     end
-    btn.MouseButton1Click:Connect(fl) btn.TouchTap:Connect(fl)
+    addClick(btn, fl)
 end
 
 local function sl(pp,tx,mn,mx,d,cb)
@@ -132,7 +145,7 @@ local function sl(pp,tx,mn,mx,d,cb)
     local bar=N("Frame",{Size=UDim2.new(1,-30,0,6),Position=UDim2.new(0,15,1,-15),BackgroundColor3=C.bg3,Parent=f})
     cr(bar,3)
     local fl=N("Frame",{Size=UDim2.new((d-mn)/(mx-mn),0,1,0),BackgroundColor3=C.a,Parent=bar}) cr(fl,3) grad(fl,C.a,C.a2,0)
-    local hb=N("TextButton",{Size=UDim2.new(1,30,0,RH),Position=UDim2.new(0,-15,1,-RH+5),BackgroundTransparency=1,Text="",Parent=f})
+    local hb=N("TextButton",{Size=UDim2.new(1,30,0,RH),Position=UDim2.new(0,-15,1,-RH+5),BackgroundTransparency=1,Text="",Active=true,Parent=f})
     
     local dg2=false 
     local function sv(x)
@@ -148,10 +161,10 @@ local function sl(pp,tx,mn,mx,d,cb)
 end
 
 local function btn(pp,tx,cb)
-    local b=N("TextButton",{Size=UDim2.new(1,0,0,RH),BackgroundColor3=C.a,Font=Enum.Font.GothamBold,TextSize=14,TextColor3=Color3.new(1,1,1),Text=tx,AutoButtonColor=false,Parent=pp})
+    local b=N("TextButton",{Size=UDim2.new(1,0,0,RH),BackgroundColor3=C.a,Font=Enum.Font.GothamBold,TextSize=14,TextColor3=Color3.new(1,1,1),Text=tx,AutoButtonColor=false,Active=true,Parent=pp})
     cr(b,10) grad(b,C.a,C.a2,0)
     local f=function()if cb then pcall(cb)end end 
-    b.MouseButton1Click:Connect(f) b.TouchTap:Connect(f)
+    addClick(b, f)
 end
 
 local function nt(m)
@@ -192,7 +205,4 @@ local function stopHug()if hugConn then hugConn:Disconnect()hugConn=nil end if h
 local function startHug()hugT=nearP()if not hugT then nt("Нет игроков рядом")return end local ch=plr.Character if ch then local hum=ch:FindFirstChildOfClass("Humanoid")local an=hum and hum:FindFirstChildOfClass("Animator")if an then local aid="rbxassetid://913402848"local anim=ch:FindFirstChild("Animate")if anim then local r=anim:FindFirstChild("run")if r and r:FindFirstChild("RunAnim")then aid=r.RunAnim.AnimationId end end local a=Instance.new("Animation")a.AnimationId=aid hugRun=an:LoadAnimation(a)hugRun.Looped=true pcall(function()hugRun:Play()end)end end if hugConn then hugConn:Disconnect()end hugConn=RS.Heartbeat:Connect(function()if not hug then return end local c=plr.Character if not c then return end if not hugT or not hugT.Character then hugT=nearP()end if not hugT then return end local th=hugT.Character:FindFirstChild("HumanoidRootPart")local my=c:FindFirstChild("HumanoidRootPart")if not th or not my then return end my.CFrame=th.CFrame*CFrame.new(0,-2.5,2.5)my.Velocity=th.Velocity end)nt("Прилип к "..hugT.Name)end
 plr.CharacterAdded:Connect(function()task.wait(1.5)if hug then startHug()end end)
 plr.Idled:Connect(function()VU:CaptureController()VU:ClickButton2(Vector2.new())end)
-local function hop()local ok,d=pcall(function()return HS:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?limit=100"))end)if ok and d and d.data then for _,s in ipairs(d.data)do if s.playing<s.maxPlayers and s.id~=game.JobId then pcall(function()TS:TeleportToPlaceInstance(game.PlaceId,s.id,plr)end)return end end nt("Свободных нет")else nt("Ошибка")end end
-
--- ВКЛАДКИ (С иконками)
-local m1=mTab("Chill","🏠")local m2
+local function hop()local ok,d=pcall(function()return HS:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?limit=100"))end)if ok an
