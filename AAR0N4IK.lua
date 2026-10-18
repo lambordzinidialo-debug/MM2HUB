@@ -9,11 +9,9 @@ local HS = game:GetService("HttpService")
 local plr = P.LocalPlayer
 local pg = plr:WaitForChild("PlayerGui")
 
-pcall(function()
-    if pg:FindFirstChild("AAR0N_Opt") then pg.AAR0N_Opt:Destroy() end
-end)
+pcall(function() if pg:FindFirstChild("AAR0N_Hub") then pg.AAR0N_Hub:Destroy() end end)
 
-local C = {bg = Color3.fromRGB(15,10,20), bg2 = Color3.fromRGB(25,15,35), a = Color3.fromRGB(168,85,247), t = Color3.fromRGB(255,255,255), r = Color3.fromRGB(255,60,60), b = Color3.fromRGB(60,150,255), g = Color3.fromRGB(60,220,100)}
+local C = {bg = Color3.fromRGB(15,10,20), bg2 = Color3.fromRGB(25,15,35), a = Color3.fromRGB(168,85,247), a2 = Color3.fromRGB(236,72,153), t = Color3.fromRGB(255,255,255), sub = Color3.fromRGB(180,170,200), r = Color3.fromRGB(255,60,60), b = Color3.fromRGB(60,150,255), g = Color3.fromRGB(60,220,100)}
 
 local function addClick(btn, func)
     btn.MouseButton1Click:Connect(func)
@@ -21,7 +19,7 @@ local function addClick(btn, func)
 end
 
 local gui = Instance.new("ScreenGui", pg)
-gui.Name = "AAR0N_Opt" gui.ResetOnSpawn = false gui.DisplayOrder = 100
+gui.Name = "AAR0N_Hub" gui.ResetOnSpawn = false gui.DisplayOrder = 100
 
 local aBtn = Instance.new("TextButton", gui)
 aBtn.Size = UDim2.fromOffset(60,60) aBtn.Position = UDim2.new(0.5,0,0.5,0) aBtn.AnchorPoint = Vector2.new(0.5,0.5) aBtn.BackgroundColor3 = C.a aBtn.Text = "A" aBtn.TextColor3 = C.t aBtn.Font = Enum.Font.GothamBlack aBtn.TextSize = 28 aBtn.Visible = false
@@ -33,7 +31,7 @@ Instance.new("UICorner", main).CornerRadius = UDim.new(0,12) Instance.new("UIStr
 
 local top = Instance.new("Frame", main)
 top.Size = UDim2.new(1,0,0,40) top.BackgroundColor3 = C.bg2 Instance.new("UICorner", top).CornerRadius = UDim.new(0,12) top.Parent = main
-local title = Instance.new("TextLabel", top) title.Size = UDim2.new(1,-40,1,0) title.BackgroundTransparency = 1 title.Text = "AAR0N4IK | OPTIMIZED" title.TextColor3 = C.a title.Font = Enum.Font.GothamBlack title.TextSize = 15 title.Parent = top
+local title = Instance.new("TextLabel", top) title.Size = UDim2.new(1,-40,1,0) title.BackgroundTransparency = 1 title.Text = "AAR0N4IK | EXCLUSIVE" title.TextColor3 = C.a title.Font = Enum.Font.GothamBlack title.TextSize = 15 title.Parent = top
 local close = Instance.new("TextButton", top) close.Size = UDim2.fromOffset(30,30) close.Position = UDim2.new(1,-35,0.5,-15) close.BackgroundColor3 = C.r close.Text = "×" close.TextColor3 = C.t close.Font = Enum.Font.GothamBold close.TextSize = 20 Instance.new("UICorner", close).CornerRadius = UDim.new(0,6) close.Parent = top
 
 addClick(close,function() main.Visible = false aBtn.Visible = true end)
@@ -55,7 +53,7 @@ end
 local function mTog(pr,tx,cb)
     local f = Instance.new("Frame", pr) f.Size = UDim2.new(1,-5,0,36) f.BackgroundColor3 = C.bg2 Instance.new("UICorner", f).CornerRadius = UDim.new(0,8)
     local l = Instance.new("TextLabel", f) l.Size = UDim2.new(1,-50,1,0) l.Position = UDim2.fromOffset(10,0) l.BackgroundTransparency = 1 l.Text = tx l.TextColor3 = C.t l.Font = Enum.Font.Gotham l.TextSize = 13 l.TextXAlignment = Enum.TextXAlignment.Left l.Parent = f
-    local bg = Instance.new("Frame", f) bg.Size = UDim2.fromOffset(36,18) bg.Position = UDim2.new(1,-46,0.5,-9) bg.BackgroundColor3 = C.bg3 or C.bg Instance.new("UICorner", bg).CornerRadius = UDim.new(0,9) bg.Parent = f
+    local bg = Instance.new("Frame", f) bg.Size = UDim2.fromOffset(36,18) bg.Position = UDim2.new(1,-46,0.5,-9) bg.BackgroundColor3 = C.bg Instance.new("UICorner", bg).CornerRadius = UDim.new(0,9) bg.Parent = f
     local kn = Instance.new("Frame", bg) kn.Size = UDim2.fromOffset(14,14) kn.Position = UDim2.fromOffset(2,2) kn.BackgroundColor3 = C.t Instance.new("UICorner", kn).CornerRadius = UDim.new(0,7) kn.Parent = bg
     local s = false local b = Instance.new("TextButton", f) b.Size = UDim2.fromScale(1,1) b.BackgroundTransparency = 1 b.Text = "" b.Parent = f
     addClick(b, function() s = not s bg.BackgroundColor3 = s and C.a or C.bg kn.Position = s and UDim2.new(1,-16,0.5,-7) or UDim2.fromOffset(2,2) if cb then cb(s) end end)
@@ -71,9 +69,9 @@ local function mBox(pr,ph,cb)
     b.FocusLost:Connect(function(e) if e and tonumber(b.Text) then cb(tonumber(b.Text)) end end)
 end
 
-local t1 = mTab("Main","🏃") local t2 = mTab("Visual","👁") local t3 = mTab("Combat","⚔️") local t4 = mTab("Players","👥") local t5 = mTab("Misc","🌐")
+local t1 = mTab("Main","🏃") local t2 = mTab("Visual","👁") local t3 = mTab("Combat","⚔️") local t4 = mTab("Players","👥") local t5 = mTab("Emote","💃") local t6 = mTab("Misc","🌐")
 
-local fly=false, noclip=false, esp=false, hbExp=false, aura=false, silentAim=false, autoGun=false, infjump=false, antiFling=false
+local fly=false, noclip=false, esp=false, hbExp=false, aura=false, silentAim=false, autoGun=false, infjump=false, antiFling=false, autoDodge=false
 local flySpeed=50
 
 local function role(p) if not p or not p.Character then return"Innocent"end local bp=p:FindFirstChild("Backpack") if bp and bp:FindFirstChild("Knife")then return"Murderer"end if bp and bp:FindFirstChild("Gun")then return"Sheriff"end return"Innocent"end
@@ -95,9 +93,9 @@ mTog(t2, "Fullbright", function(s) L.Ambient=s and Color3.new(1,1,1) or Color3.n
 
 -- COMBAT
 mTog(t3, "Melee Aura", function(s) aura=s end)
-mTog(t3, "Silent Aim", function(s) silentAim=s end)
+mTog(t3, "Silent Aim (Шериф)", function(s) silentAim=s end)
 mTog(t3, "Auto Dropped Gun", function(s) autoGun=s end)
-mBtn(t3, "TP to Murderer", function() local m=fm() if m and m.Character then plr.Character.HumanoidRootPart.CFrame=m.Character.HumanoidRootPart.CFrame*CFrame.new(0,0,3) end end)
+mTog(t3, "Auto-Dodge", function(s) autoDodge=s end)
 
 -- PLAYERS
 local function fling(t) if t and t.Character then local h=t.Character:FindFirstChild("HumanoidRootPart") if h then local b=Instance.new("BodyAngularVelocity",h) b.AngularVelocity=Vector3.new(99999,99999,99999) b.MaxTorque=Vector3.new(math.huge,math.huge,math.huge) task.delay(1,function() b:Destroy() end) end end end
@@ -115,11 +113,33 @@ end
 upd() task.spawn(function() while task.wait(5) do upd() end end)
 mBtn(t4, "Fling All", function() for _,p in ipairs(P:GetPlayers()) do if p~=plr then fling(p) end end end)
 
+-- EMOTES
+local function playAnim(id) local c=plr.Character if c and c:FindFirstChildOfClass("Humanoid") then local a=Instance.new("Animation") a.AnimationId="rbxassetid://"..tostring(id) local an=c.Humanoid:FindFirstChildOfClass("Animator") if an then local tr=an:LoadAnimation(a) tr:Play() end end end
+mBtn(t5, "Floss", function() playAnim(5915694204) end) 
+mBtn(t5, "Dab", function() playAnim(2482632600) end) 
+mBtn(t5, "Orange Justice", function() playAnim(3264923498) end) 
+mBtn(t5, "Default Dance", function() playAnim(507771019) end) 
+mBtn(t5, "Gangnam Style", function() playAnim(4341064546) end) 
+mBtn(t5, "Macarena", function() playAnim(1286874805) end) 
+mBtn(t5, "Russian Dance", function() playAnim(7823163342) end) 
+mBtn(t5, "Zombie Walk", function() playAnim(616163682) end) 
+mBtn(t5, "Levitate", function() playAnim(3132104140) end) 
+mBtn(t5, "Hacker Dance", function() playAnim(13121459905) end) 
+mBtn(t5, "Moonwalk", function() playAnim(8299783018) end) 
+mBtn(t5, "Salute", function() playAnim(3382359835) end) 
+mBtn(t5, "Shuffle", function() playAnim(8036852701) end) 
+mBtn(t5, "Electro Shuffle", function() playAnim(5102713912) end) 
+mBtn(t5, "Best Mates", function() playAnim(6692709646) end)
+mBtn(t5, "Twerk", function() playAnim(5828553173) end)
+mBtn(t5, "Breakdance", function() playAnim(3412021141) end)
+
 -- MISC
-mTog(t5, "Anti-Fling", function(s) antiFling=s end)
-mBtn(t5, "Server Hop", function() local ok,d=pcall(function() return HS:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?limit=100")) end) if ok and d and d.data then for _,s in ipairs(d.data) do if s.playing<s.maxPlayers and s.id~=game.JobId then TS:TeleportToPlaceInstance(game.PlaceId,s.id,plr) return end end end end)
-mBtn(t5, "Rejoin", function() TS:Teleport(game.PlaceId,plr) end)
-mBtn(t5, "Destroy UI", function() gui:Destroy() end)
+mTog(t6, "Anti-Fling", function(s) antiFling=s end)
+mBtn(t6, "Server Hop", function() local ok,d=pcall(function() return HS:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?limit=100")) end) if ok and d and d.data then for _,s in ipairs(d.data) do if s.playing<s.maxPlayers and s.id~=game.JobId then TS:TeleportToPlaceInstance(game.PlaceId,s.id,plr) return end end end end)
+mBtn(t6, "Rejoin", function() TS:Teleport(game.PlaceId,plr) end)
+mBtn(t6, "Time Day", function() L.ClockTime=12 end)
+mBtn(t6, "Time Night", function() L.ClockTime=0 end)
+mBtn(t6, "Destroy UI", function() gui:Destroy() end)
 
 -- ЕДИНЫЙ ЦИКЛ (ОПТИМИЗАЦИЯ)
 local espTimer = 0
@@ -145,6 +165,8 @@ RS.Heartbeat:Connect(function(dt)
     
     if silentAim then local m=fm() if m and m.Character and m.Character:FindFirstChild("HumanoidRootPart") then W.CurrentCamera.CFrame=CFrame.lookAt(W.CurrentCamera.CFrame.Position,m.Character.HumanoidRootPart.Position) end end
     
+    if autoDodge then local m=fm() if m and m.Character and m.Character:FindFirstChild("HumanoidRootPart") then if (m.Character.HumanoidRootPart.Position-hrp.Position).Magnitude<20 then hum.Jump=true end end end
+
     if autoGun then
         local bp = plr:FindFirstChild("Backpack")
         if not c:FindFirstChild("Gun") and not (bp and bp:FindFirstChild("Gun")) then
@@ -169,4 +191,4 @@ RS.Heartbeat:Connect(function(dt)
     end
 end)
 
-pcall(function() game:GetService("StarterGui"):SetCore("SendNotification",{Title="AAR0N",Text="Optimized 35 funcs загружен!",Duration=5}) end)
+pcall(function() game:GetService("StarterGui"):SetCore("SendNotification",{Title="AAR0N4IK",Text="Exclusive Hub загружен!",Duration=5}) end)
